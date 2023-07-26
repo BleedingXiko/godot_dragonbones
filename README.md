@@ -18,7 +18,7 @@ Use this resource as the main entry point into using Godot Dragonbones. From the
 If you have a more specialized question, our Discord server is the best place for you to reach the people using it the most. :)
 ___
 ### Supported Versions
-* Tested versions: Godot 3.2 + Godot 4.0
+* Tested versions: Godot 3.6 + Godot 4.0
 * DragonBones Pro 5.6
 * Unconfirmed: Blender Cutout Animation Tools
 
