@@ -25,24 +25,21 @@
 
 #endif
 
-class ResourceFormatLoaderGDDragonBones : public ResourceFormatLoader
-{
+class ResourceFormatLoaderGDDragonBones : public ResourceFormatLoader {
 public:
-#if (VERSION_MAJOR >=4)
+#if (VERSION_MAJOR >= 4)
 	virtual RES load(const String &p_path, const String &p_original_path, Error *r_error, bool p_use_sub_threads, float *r_progress, bool p_no_cache) {
-#else
+#elif (VERSION_MAJOR == 3 && VERSION_MINOR >= 6)
 	virtual RES load(const String &p_path, const String &p_original_path, Error *r_error, bool p_no_subresource_cache = false) {
+#else
+	virtual RES load(const String &p_path, const String &p_original_path, Error *r_error) {
 #endif
 		float __tm_start = OS::get_singleton()->get_ticks_msec();
 		GDDragonBones::GDDragonBonesResource* __p_res = memnew(GDDragonBones::GDDragonBonesResource);
 		Ref<GDDragonBones::GDDragonBonesResource> __p_ref(__p_res);
 		
-#if (VERSION_MAJOR >= 3)
 		String __str_path_base = p_path.get_basename();
-#else
-        String __str_path_base = p_path.basename();
-#endif
-        __str_path_base.erase(__str_path_base.length() - strlen("_ske"), strlen("_ske"));
+		__str_path_base.erase(__str_path_base.length() - strlen("_ske"), strlen("_ske"));
 
         // texture path
         __p_ref->set_def_texture_path(__str_path_base + "_tex.png");
@@ -51,8 +48,16 @@ public:
         bool __bret = __p_ref->load_texture_atlas_data(String(__str_path_base + "_tex.json").ascii().get_data());
         ERR_FAIL_COND_V(!__bret, 0);
 
+#if (VERSION_MAJOR >= 4)
+        // loading bones data
+        __bret = __p_ref->load_bones_data(p_path.ascii().get_data(), p_no_cache);
+#elif (VERSION_MAJOR == 3 && VERSION_MINOR >= 6)
+        // loading bones data
+        __bret = __p_ref->load_bones_data(p_path.ascii().get_data(), p_no_subresource_cache);
+#else
         // loading bones data
         __bret = __p_ref->load_bones_data(p_path.ascii().get_data());
+#endif
         ERR_FAIL_COND_V(!__bret, 0);
 
 #ifdef TOOLS_ENABLED
